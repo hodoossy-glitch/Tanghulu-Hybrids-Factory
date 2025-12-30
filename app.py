@@ -4,7 +4,7 @@ import google.generativeai as genai
 # 1. 페이지 설정: 오팔 미디어 페이지 스타일 (Surreal Elegance)
 st.set_page_config(page_title="Hybrid Creature Gallery", layout="wide")
 
-# 스타일 설정: 갤러리풍 다크 테마
+# 스타일 설정: 갤러리풍 다크 테마 반영
 st.markdown("""
     <style>
     .main { background-color: #0b0e14; color: #ffffff; }
@@ -13,14 +13,16 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. API 설정 (갱신된 무료 키 사용)
+# 2. API 설정 및 모델 로드 (오류 해결 포인트)
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
-    # 무료 등급 최적화 모델
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    
+    # 404 오류 해결을 위해 모델의 전체 경로명을 사용합니다.
+    # 만약 'models/gemini-1.5-flash'가 안 되면 'gemini-pro'로 변경해 보세요.
+    model = genai.GenerativeModel('models/gemini-1.5-flash')
 except Exception as e:
-    st.error("⚠️ API 키를 갱신하고 Streamlit Secrets에 등록해주세요.")
+    st.error(f"⚠️ 설정 오류: {e}")
 
 # 3. 앱 헤더 및 입력 (Opal Step 1)
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
@@ -32,48 +34,17 @@ if st.button("🚀 Generate Artwork"):
             try:
                 # [Opal Step 2 & 3: Image Prompt Logic]
                 img_logic = f"""
-                You are an expert prompt engineer. Expand '{user_input}' into a visual prompt.
-                1. Detail how animal features are replaced by object parts.
+                You are an expert prompt engineer. Expand '{user_input}' into a detailed visual prompt.
+                1. Explicitly describe how the animal's features are replaced by components of the object.
                 2. Apply a thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces.
-                3. High-quality, photorealistic, surreal appearance.
+                3. High-quality, photorealistic, vibrant, and surreal appearance.
                 IMPORTANT: Generate exactly one image.
                 """
-                img_res = model.generate_content(img_logic).text
+                # AI를 통해 오팔 수준의 정교한 프롬프트 생성
+                response_img = model.generate_content(img_logic)
+                img_res = response_img.text
 
                 # [Opal Step 4 & 5: Video Prompt Logic]
                 vid_logic = f"""
-                Create a natural language prompt for a 6s cinematic slow-motion video.
-                1. Content: {user_input} with thick Tanghulu-like glaze.
-                2. Movement: Impactful slow-motion action with light reflections on glossy surface.
-                3. Style: No audio, cinematic elegance.
-                """
-                vid_res = model.generate_content(vid_logic).text
-
-                # [Opal Step 6: Gallery Rendering]
-                st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🖼️ Hybrid Image Design")
-                    st.write(img_res) # 오팔 상세 프롬프트 출력
-                    st.image("https://via.placeholder.com/1024?text=Tanghulu+Glaze+Rendering...", use_container_width=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-                with col2:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🎥 Cinematic Motion Design")
-                    st.write(vid_res) # 오팔 영상 프롬프트 출력
-                    st.info("비디오 렌더링 준비 중: Cinematic slow-motion without audio.")
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-            except Exception as e:
-                st.error(f"생성 중 오류 발생: {e}")
-    else:
-        st.warning("내용을 입력해주세요.")
-
-# 하단 구독 섹션
-st.markdown("---")
-st.markdown("<h3 style='text-align: center;'>✋ 구독하기</h3>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'><b>딱-뉴스</b>를 구독하고 매일 새로운 AI 로봇 앱 소스를 받아보세요!</p>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: gray;'>Created by DDAK-NEWS | Powered by Opal Logic & Gemini 1.5 Flash</p>", unsafe_allow_html=True)
+                Create a natural language prompt for a cinematic slow-motion video.
+                1. Visual reference
