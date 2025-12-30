@@ -1,10 +1,10 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. 페이지 설정: 오팔 미디어 페이지 스타일 (Surreal Elegance)
+# 1. 페이지 설정: 오팔 미디어 페이지 스타일 (Surreal Elegance) 반영
 st.set_page_config(page_title="Hybrid Creature Gallery", layout="wide")
 
-# 스타일 설정: 갤러리풍 다크 테마 반영
+# 스타일 설정: 갤러리풍 다크 테마 디자인
 st.markdown("""
     <style>
     .main { background-color: #0b0e14; color: #ffffff; }
@@ -13,11 +13,11 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. API 설정 (404 오류 방지 및 무료 키 대응)
+# 2. API 설정 및 모델 로드 (404 오류 방지)
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
-    # 모델 경로를 명확히 지정하여 404 에러를 차단합니다.
+    # 무료 등급에서 가장 안정적인 모델 경로를 사용합니다.
     model = genai.GenerativeModel('models/gemini-1.5-flash')
 except Exception as e:
     st.error(f"⚠️ 설정 오류: {e}")
@@ -42,35 +42,3 @@ if st.button("🚀 Generate Artwork"):
                 img_res = model.generate_content(img_logic).text
 
                 # [Opal Step 4 & 5: Video Prompt Logic]
-                vid_logic = (
-                    f"Create a natural language prompt for a cinematic slow-motion video of {user_input}. "
-                    "1. Apply a thick, ultra-glossy, squishy Tanghulu-like glaze throughout. "
-                    "2. Motion: Impactful slow-motion action with light reflections. "
-                    "3. Duration: Less than 6 seconds, no audio."
-                )
-                vid_res = model.generate_content(vid_logic).text
-
-                # [Opal Step 6: 갤러리 렌더링]
-                st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🖼️ Hybrid Image Design")
-                    st.write(img_res)
-                    st.image("https://via.placeholder.com/1024?text=Tanghulu+Glaze+Rendering...", use_container_width=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-                with col2:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🎥 Cinematic Motion Design")
-                    st.write(vid_res)
-                    st.info("비디오 렌더링 준비 중: Cinematic slow-motion without audio.")
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-            except Exception as e:
-                # 에러가 발생했던 지점: try 블록에 대응하는 except 블록의 위치를 정확히 맞춤
-                st.error(f"생성 중 오류 발생: {e}")
-                st.info("API 키 권한 또는 모델 설정을 확인하세요.")
-    else:
-        st.
