@@ -9,7 +9,7 @@ try:
     # Streamlit Secrets에서 API 키를 가져옵니다.
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
-    # 404 에러 방지를 위해 가장 안정적인 모델로 설정합니다.
+    # 가장 안정적인 모델로 설정합니다.
     model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
     st.error(f"⚠️ 설정 오류: {e}")
@@ -67,6 +67,7 @@ if st.button("🚀 로봇 생성하기"):
                     st.caption(f"Video Prompt: {vid_prompt}")
 
             except Exception as e:
-                # SyntaxError를 해결하기 위해 반드시 필요한 except 블록
+                # SyntaxError 해결을 위해 반드시 필요한 except 블록
                 st.error(f"생성 중 오류 발생: {e}")
-                st.info("API 권
+                st.info("API 권한 또는 모델 설정을 확인하세요.")
+    else:
