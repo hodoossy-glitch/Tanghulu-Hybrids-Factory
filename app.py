@@ -1,60 +1,56 @@
 import streamlit as st
-import google.generativeai as genai
 
-# 1. 페이지 설정: 오팔 Surreal Elegance 스타일 반영
-st.set_page_config(page_title="Hybrid Creature Media Gallery", layout="wide")
+st.set_page_config(
+    page_title="Hybrid Creature Prompt Generator",
+    page_icon="🧊🐾",
+    layout="centered"
+)
 
-# 스타일 설정: 갤러리풍 다크 테마 디자인
-st.markdown("""
-    <style>
-    .main { background-color: #0b0e14; color: #ffffff; }
-    h1 { font-family: 'Montserrat', sans-serif; text-align: center; color: #f0f0f0; margin-bottom: 30px; }
-    .gallery-card { background: #161b22; padding: 25px; border-radius: 20px; border: 1px solid #30363d; margin-bottom: 20px; }
-    .stButton>button { width: 100%; border-radius: 10px; background-color: #238636; color: white; font-weight: bold; }
-    </style>
-    """, unsafe_allow_html=True)
+st.title("🧬 Hybrid Creature Image Prompt Generator")
+st.write(
+    "오브젝트 + 동물 하이브리드 설명을 입력하면\n"
+    "Tanghulu 글레이즈가 적용된 **이미지 생성 프롬프트**를 자동으로 만들어줍니다."
+)
 
-# 2. API 설정 및 모델 로드 (404 오류 방지)
-try:
-    API_KEY = st.secrets["GOOGLE_API_KEY"]
-    genai.configure(api_key=API_KEY)
-    # v1beta 등 모든 버전에서 가장 안정적인 모델 경로를 사용합니다.
-    model = genai.GenerativeModel('gemini-1.5-flash')
-except Exception as e:
-    st.error(f"⚠️ API 설정 오류: {e}")
+# User input
+hybrid_description = st.text_input(
+    "Hybrid Creature Description",
+    placeholder="예: Fridge Hippo, Toaster Crocodile, Washing Machine Cat"
+)
 
-# 3. 앱 헤더 및 입력 (Opal Step 1 반영)
-st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
-user_input = st.text_input("Describe your hybrid creature", placeholder="Violin Koala, Taxi Cat, Fridge Hippo...")
+# Generate prompt
+if hybrid_description:
+    image_generation_prompt = f"""
+You are an expert image generation prompt engineer, specializing in hyper-detailed, photorealistic visual descriptions.
 
-# 4. 실행 로직 (SyntaxError 및 문자열 끊김 완벽 해결 버전)
-if st.button("🚀 Generate Artwork"):
-    if user_input:
-        with st.spinner("오팔 엔진이 크리처를 설계 중입니다..."):
-            try:
-                # [Opal Step 2 & 3: Image Prompt 생성]
-                img_p = (
-                    f"Expert prompt for '{user_input}': "
-                    "1. Replace animal parts with object components. "
-                    "2. Apply thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces. "
-                    "3. Photorealistic and surreal. IMPORTANT: Generate exactly one image."
-                )
-                img_res = model.generate_content(img_p).text
+Create a single, comprehensive image generation prompt based on the following hybrid creature description.
 
-                # [Opal Step 4 & 5: Video Prompt 생성]
-                vid_p = (
-                    f"Video prompt for {user_input}: "
-                    "Cinematic slow-motion, 6 seconds, no audio. "
-                    "Show thick Tanghulu-like glaze with vivid light reflections."
-                )
-                vid_res = model.generate_content(vid_p).text
+Hybrid Creature Description:
+{hybrid_description}
 
-                # [Opal Step 6: 갤러리 렌더링 레이아웃]
-                st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🖼️ Hybrid Image Design")
-                    st.write(img_res)
-                    st.
+The image should depict a unique hybrid creature where the animal’s anatomical features are replaced or merged with components of the specified object.
+Describe in detail how the object’s materials replace the animal’s body parts.
+
+All surfaces of the creature must be coated in a thick, ultra-glossy, squishy Tanghulu-like glaze.
+The glaze should look translucent, candy-coated, reflective, slightly bulging, and sticky, as if dipped in hardened sugar syrup.
+
+Use realistic lighting, cinematic shadows, reflections, shallow depth of field, and photorealistic textures.
+The creature should feel physically real despite its surreal form.
+The background should be clean or cinematic and not distracting.
+
+Generate a single, high-quality, photorealistic image.
+
+IMPORTANT: Generate exactly one image
+""".strip()
+
+    st.subheader("📸 Image Generation Prompt")
+    st.text_area(
+        label="Copy & paste this into your image model",
+        value=image_generation_prompt,
+        height=420
+    )
+
+    st.success("프롬프트 생성 완료! 복사해서 바로 사용하세요 🚀")
+
+else:
+    st.info("하이브리드 설명을 입력하면 프롬프트가 생성됩니다.")
