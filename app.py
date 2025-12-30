@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. 페이지 설정
+# 1. 페이지 설정 및 디자인
 st.set_page_config(page_title="Bio-Mechanical Robot Factory", layout="centered")
 
 # 2. API 및 모델 설정
@@ -52,7 +52,7 @@ if st.button("🚀 로봇 생성하기"):
                 with col1:
                     st.markdown("### 🖼️ Image Result")
                     st.write("**로봇 상세 설계:**")
-                    # 에러가 발생했던 지점: 들여쓰기와 try-except 블록의 짝을 맞춤
+                    # 안전하게 텍스트 출력
                     if response and hasattr(response, 'text'):
                         st.write(response.text)
                     else:
@@ -67,7 +67,14 @@ if st.button("🚀 로봇 생성하기"):
                     st.caption(f"Video Prompt: {vid_prompt}")
 
             except Exception as e:
-                # SyntaxError 해결을 위해 반드시 필요한 except 블록
                 st.error(f"생성 중 오류 발생: {e}")
                 st.info("API 권한 또는 모델 설정을 확인하세요.")
     else:
+        # 에러가 발생했던 73라인: else 문 뒤에 들여쓰기 된 실행 코드를 배치함
+        st.warning("먼저 재료(조합)를 입력해 주세요.")
+
+# 6. 푸터 및 구독하기 섹션
+st.markdown("---")
+st.markdown("### ✋ 구독하기")
+st.write("더 많은 AI 로봇 제작 팁을 원하신다면 **딱-뉴스** 채널을 구독해 주세요!")
+st.markdown("<p style='text-align: center;
