@@ -21,26 +21,19 @@ try:
     # v1beta 등 모든 버전에서 가장 안정적인 모델 식별자를 사용합니다.
     model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
-    st.error(f"⚠️ 설정 오류: {e}")
+    st.error(f"⚠️ API 설정 오류: {e}")
 
 # 3. 앱 헤더 및 입력 (Opal Step 1 반영)
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
 user_input = st.text_input("Describe your hybrid creature", placeholder="Violin Koala, Taxi Cat, Fridge Hippo...")
 
-# 4. 실행 로직 (모든 문법 에러 및 404 해결 버전)
+# 4. 실행 로직 (SyntaxError 해결 및 오팔 로직 이식)
 if st.button("🚀 Generate Artwork"):
     if user_input:
         with st.spinner("오팔 엔진이 크리처를 설계 중입니다..."):
             try:
                 # [Opal Step 2 & 3: Image Prompt 생성]
-                # try 블록 바로 아래에 주석이 아닌 실제 실행 코드가 있어야 합니다.
+                # try 블록 바로 아래에 실제 실행 코드를 배치하여 문법 에러를 해결합니다.
                 img_p = (
                     f"Expert prompt for '{user_input}': "
                     "1. Replace animal parts with object components. "
-                    "2. Apply thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces. "
-                    "3. Photorealistic and surreal. IMPORTANT: Generate exactly one image."
-                )
-                img_res = model.generate_content(img_p).text
-
-                # [Opal Step 4 & 5: Video Prompt 생성]
-                # SyntaxError
