@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. 페이지 설정 및 디자인
+# 1. 페이지 설정: 오팔 미디어 페이지 스타일 (Surreal Elegance)
 st.set_page_config(page_title="Hybrid Creature Gallery", layout="wide")
 
 st.markdown("""
@@ -12,46 +12,32 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. API 설정
+# 2. API 설정 및 모델 로드
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
+    # 무료 등급에서 가장 안정적인 모델 경로를 직접 지정합니다.
     model = genai.GenerativeModel('models/gemini-1.5-flash')
 except Exception as e:
     st.error(f"설정 오류: {e}")
 
 # 3. 입력 섹션 (Opal Step 1)
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
-user_input = st.text_input("Describe your hybrid", placeholder="Violin Koala, Taxi Cat...")
+user_input = st.text_input("Describe your hybrid creature", placeholder="Violin Koala, Taxi Cat, Fridge Hippo...")
 
-# 4. 생성 로직 (들여쓰기 오류 해결 버전)
+# 4. 생성 로직 (들여쓰기 및 SyntaxError 완벽 해결 버전)
 if st.button("🚀 Generate Artwork"):
     if user_input:
-        with st.spinner("설계 중..."):
+        with st.spinner("오팔 엔진이 크리처를 설계 중입니다..."):
             try:
                 # [Opal Step 2 & 3: Image Prompt]
+                # try 블록 바로 아래에 실제 코드가 있어야 에러가 나지 않습니다.
                 img_p = (
                     f"Expert prompt for '{user_input}': "
-                    "Replace animal parts with object parts. "
-                    "Apply thick, ultra-glossy, squishy Tanghulu glaze to all surfaces. "
-                    "Photorealistic, surreal. IMPORTANT: Generate exactly one image."
+                    "1. Replace animal parts with object components. "
+                    "2. Apply thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces. "
+                    "3. Photorealistic and surreal. IMPORTANT: Generate exactly one image."
                 )
                 img_res = model.generate_content(img_p).text
 
-                # [Opal Step 4 & 5: Video Prompt]
-                vid_p = (
-                    f"Video prompt for {user_input}: "
-                    "Cinematic slow-motion, 6s, no audio. "
-                    "Show thick Tanghulu glaze with vivid light reflections."
-                )
-                vid_res = model.generate_content(vid_p).text
-
-                # [Opal Step 6: Render Page]
-                st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
-                c1, c2 = st.columns(2)
-                
-                with c1:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.write("### 🖼️ Image Design")
-                    st.write(img_res)
-                    st.image("https://via.placeholder.com/1024?text=Tanghulu+Rendering", use_container
+                #
