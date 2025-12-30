@@ -37,4 +37,19 @@ if st.button("🚀 Generate Artwork"):
                 img_p = (
                     f"Expert prompt for '{user_input}': "
                     "1. Replace animal parts with object components. "
-                    "2. Apply thick, ultra-glossy, squ
+                    "2. Apply thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces. "
+                    "3. Photorealistic and surreal. IMPORTANT: Generate exactly one image."
+                )
+                img_res = model.generate_content(img_p).text
+
+                # [Opal Step 4 & 5: Video Prompt 생성]
+                vid_p = (
+                    f"Video prompt for {user_input}: "
+                    "Cinematic slow-motion, 6 seconds, no audio. "
+                    "Show thick Tanghulu-like glaze with vivid light reflections."
+                )
+                vid_res = model.generate_content(vid_p).text
+
+                # [Opal Step 6: 갤러리 렌더링]
+                st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
+                col1, col2 = st
