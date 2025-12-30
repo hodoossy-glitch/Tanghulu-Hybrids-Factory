@@ -8,24 +8,26 @@ st.set_page_config(page_title="Hybrid Creature Media Gallery", layout="wide")
 st.markdown("""
     <style>
     .main { background-color: #0b0e14; color: #ffffff; }
-    h1 { font-family: 'Montserrat', sans-serif; text-align: center; color: #f0f0f0; }
+    h1 { font-family: 'Montserrat', sans-serif; text-align: center; color: #f0f0f0; margin-bottom: 30px; }
     .gallery-card { background: #161b22; padding: 25px; border-radius: 20px; border: 1px solid #30363d; margin-bottom: 20px; }
+    .stButton>button { width: 100%; border-radius: 10px; background-color: #238636; color: white; }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. API 설정 및 모델 로드 (무료 키/404 방지)
+# 2. API 설정 및 모델 로드 (404 오류 방지)
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # 모델 경로를 명확히 지정하여 404 에러를 원천 차단합니다.
+    model = genai.GenerativeModel('models/gemini-1.5-flash')
 except Exception as e:
     st.error(f"⚠️ 설정 오류: {e}")
 
-# 3. 앱 헤더 및 입력 (Opal Step 1)
+# 3. 앱 헤더 및 입력 (Opal Step 1 반영)
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
 user_input = st.text_input("Describe your hybrid creature", placeholder="Violin Koala, Taxi Cat, Fridge Hippo...")
 
-# 4. 실행 로직 (들여쓰기 및 문자열 오류 해결)
+# 4. 실행 로직 (SyntaxError 해결 버전)
 if st.button("🚀 Generate Artwork"):
     if user_input:
         with st.spinner("오팔 엔진이 크리처를 설계 중입니다..."):
@@ -55,12 +57,11 @@ if st.button("🚀 Generate Artwork"):
                     st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
                     st.markdown("### 🖼️ Hybrid Image Design")
                     st.write(img_res)
-                    st.image("https://via.placeholder.com/1024?text=Tanghulu+Glaze+Rendering", use_container_width=True)
+                    st.image("https://via.placeholder.com/1024?text=Tanghulu+Glaze+Image", use_container_width=True)
                     st.markdown('</div>', unsafe_allow_html=True)
 
                 with col2:
                     st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    # 수정 지점: 따옴표를 정확히 닫고 문장을 한 줄로 완성함
                     st.markdown("### 🎥 Cinematic Motion Design")
                     st.write(vid_res)
                     st.info("비디오 렌더링 준비 중...")
