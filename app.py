@@ -44,14 +44,14 @@ if not API_KEY:
 genai.configure(api_key=API_KEY)
 
 try:
-    # 🔥 핵심 수정 포인트
-    model = genai.GenerativeModel("models/gemini-pro")
+    # ✅ 현재 유일하게 안정적인 모델
+    model = genai.GenerativeModel("models/gemini-1.0-pro")
 except Exception as e:
     st.error(f"모델 로드 실패: {e}")
     st.stop()
 
 # --------------------------------------------------
-# 4. 입력 UI
+# 4. 입력
 # --------------------------------------------------
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
 
