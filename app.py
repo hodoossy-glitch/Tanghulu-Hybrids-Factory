@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. 페이지 설정 및 초기화
+# 1. 페이지 설정
 st.set_page_config(page_title="Bio-Mechanical Robot Factory", layout="centered")
 
 # 2. API 및 모델 설정
@@ -23,7 +23,6 @@ user_input = st.text_input("로봇 재료 입력", placeholder="예: 딸기 고�
 
 # 4. 프롬프트 생성 함수
 def get_prompts(input_text):
-    # 얼굴(인간 피부), 몸(금속), 내부 노출 및 탕후루 질감 지시
     base_style = (
         "Face: Realistic human skin texture, expressive eyes. "
         "Body: High-gloss polished chrome, sophisticated mechanical armor. "
@@ -42,7 +41,7 @@ if st.button("🚀 로봇 생성하기"):
         
         with st.spinner("최첨단 로봇을 설계 중입니다..."):
             try:
-                # AI 모델 호출하여 텍스트 및 설계안 생성
+                # AI 모델 호출하여 설계안 생성
                 response = model.generate_content(img_prompt)
                 
                 st.success("로봇 설계가 완료되었습니다!")
@@ -53,14 +52,13 @@ if st.button("🚀 로봇 생성하기"):
                 with col1:
                     st.markdown("### 🖼️ Image Result")
                     st.write("**로봇 상세 설계:**")
-                    # 에러가 발생했던 지점: 들여쓰기와 try-except 짝을 맞춤
-                    if response and response.text:
+                    # 에러가 발생했던 지점: 들여쓰기와 try-except 블록의 짝을 맞춤
+                    if response and hasattr(response, 'text'):
                         st.write(response.text)
                     else:
                         st.write("설계 내용을 불러올 수 없습니다.")
                     
                     st.info("💡 위 설계를 바탕으로 시각화를 진행합니다.")
-                    # 실제 이미지가 나오기 전까지는 プレースホルダ 이미지를 표시합니다.
                     st.image("https://via.placeholder.com/512x512.png?text=Generating+Robot+Image...", use_container_width=True)
 
                 with col2:
@@ -69,4 +67,6 @@ if st.button("🚀 로봇 생성하기"):
                     st.caption(f"Video Prompt: {vid_prompt}")
 
             except Exception as e:
-                # 에러 메시지에서 요구한 except 블록입니다.
+                # SyntaxError를 해결하기 위해 반드시 필요한 except 블록
+                st.error(f"생성 중 오류 발생: {e}")
+                st.info("API 권
