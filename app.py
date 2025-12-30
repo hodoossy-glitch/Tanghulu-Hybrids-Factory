@@ -52,4 +52,3 @@ if st.button("🚀 Generate Artwork"):
 
                 # [Opal Step 6: 갤러리 렌더링]
                 st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
-                col1, col2 = st
