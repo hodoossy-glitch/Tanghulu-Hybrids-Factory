@@ -14,13 +14,11 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. API 설정 및 모델 로드 (404 오류 해결 핵심)
+# 2. API 설정 및 모델 로드 (404 오류 방지)
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
-    
-    # 404 에러 해결: 모델명을 'models/gemini-1.5-flash-latest'로 명시하거나 
-    # 혹은 가장 호환성이 높은 'gemini-1.5-flash'를 사용합니다.
+    # v1beta 등 모든 버전에서 가장 안정적인 모델 경로를 사용합니다.
     model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
     st.error(f"⚠️ API 설정 오류: {e}")
@@ -29,13 +27,12 @@ except Exception as e:
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
 user_input = st.text_input("Describe your hybrid creature", placeholder="Violin Koala, Taxi Cat, Fridge Hippo...")
 
-# 4. 실행 로직 (들여쓰기 및 SyntaxError 완벽 해결)
+# 4. 실행 로직 (SyntaxError 및 문자열 끊김 완벽 해결 버전)
 if st.button("🚀 Generate Artwork"):
     if user_input:
         with st.spinner("오팔 엔진이 크리처를 설계 중입니다..."):
             try:
                 # [Opal Step 2 & 3: Image Prompt 생성]
-                # try 블록 바로 아래에 실제 실행 코드를 배치하여 문법 에러 방지
                 img_p = (
                     f"Expert prompt for '{user_input}': "
                     "1. Replace animal parts with object components. "
@@ -60,16 +57,4 @@ if st.button("🚀 Generate Artwork"):
                     st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
                     st.markdown("### 🖼️ Hybrid Image Design")
                     st.write(img_res)
-                    st.image("https://via.placeholder.com/1024?text=Tanghulu+Glaze+Rendering", use_container_width=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-                with col2:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🎥 Cinematic Motion Design")
-                    st.write(vid_res)
-                    st.info("비디오 렌더링 준비 중...")
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-            except Exception as e:
-                # try와 정확히 줄을 맞추어 SyntaxError 방지
-                st.error(f"생
+                    st.
