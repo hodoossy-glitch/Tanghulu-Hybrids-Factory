@@ -1,133 +1,88 @@
 import streamlit as st
-import google.generativeai as genai
 
 # --------------------------------------------------
 # 1. 페이지 설정
 # --------------------------------------------------
 st.set_page_config(
-    page_title="Hybrid Creature Media Gallery",
-    layout="wide"
+    page_title="Hybrid Creature Prompt Generator",
+    page_icon="🧬",
+    layout="centered"
 )
 
 # --------------------------------------------------
-# 2. 스타일
+# 2. 간단한 스타일
 # --------------------------------------------------
 st.markdown("""
 <style>
 .main { background-color: #0b0e14; color: #ffffff; }
-h1 { text-align: center; color: #f0f0f0; margin-bottom: 30px; }
-.gallery-card {
-    background: #161b22;
-    padding: 25px;
-    border-radius: 20px;
-    border: 1px solid #30363d;
-    margin-bottom: 20px;
-}
+h1 { text-align: center; margin-bottom: 30px; }
 .stButton>button {
     width: 100%;
     border-radius: 10px;
-    background-color: #238636;
-    color: white;
     font-weight: bold;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # --------------------------------------------------
-# 3. API 설정
+# 3. 헤더
 # --------------------------------------------------
-API_KEY = st.secrets.get("GOOGLE_API_KEY")
-if not API_KEY:
-    st.error("⚠️ GOOGLE_API_KEY가 설정되지 않았습니다.")
-    st.stop()
-
-genai.configure(api_key=API_KEY)
-
-try:
-    # ✅ 현재 유일하게 안정적인 모델
-    model = genai.GenerativeModel("models/gemini-1.0-pro")
-except Exception as e:
-    st.error(f"모델 로드 실패: {e}")
-    st.stop()
+st.markdown("<h1>🧬 Hybrid Creature Image Prompt Generator</h1>", unsafe_allow_html=True)
+st.write(
+    "오브젝트 + 동물 하이브리드를 입력하면\n"
+    "**Tanghulu 글레이즈 이미지 생성 프롬프트**를 만들어줍니다."
+)
 
 # --------------------------------------------------
-# 4. 입력
+# 4. 사용자 입력
 # --------------------------------------------------
-st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
-
-user_input = st.text_input(
-    "Describe your hybrid creature",
+hybrid_description = st.text_input(
+    "Hybrid Creature Description",
     placeholder="Fridge Hippo, Taxi Cat, Violin Koala..."
 )
 
 # --------------------------------------------------
-# 5. 실행
+# 5. 프롬프트 생성
 # --------------------------------------------------
-if st.button("🚀 Generate Artwork"):
-    if not user_input:
-        st.warning("먼저 하이브리드 설명을 입력해주세요.")
+if st.button("🚀 Generate Prompt"):
+    if not hybrid_description:
+        st.warning("하이브리드 설명을 입력하세요.")
     else:
-        with st.spinner("Gemini가 프롬프트를 생성 중입니다..."):
-            try:
-                image_prompt = f"""
-You are an expert image generation prompt engineer.
+        image_generation_prompt = f"""
+You are an expert image generation prompt engineer, specializing in hyper-detailed, photorealistic visuals.
 
-Create a highly detailed, photorealistic image generation prompt
-for a hybrid creature described as:
+Create a single, high-quality image of a hybrid creature described as:
+"{hybrid_description}"
 
-"{user_input}"
+The creature should combine an animal and an object.
+Clearly replace the animal’s anatomical features with components of the object
+(e.g., fur replaced by metal panels, eyes replaced by LED screens, limbs formed from object parts).
 
-Replace the animal’s anatomical features with components of the object.
-Apply a thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces.
-The glaze should appear translucent, candy-coated, reflective, and slightly bulging.
+All surfaces of the creature must be coated in a thick, ultra-glossy, squishy Tanghulu-like glaze.
+The glaze should appear translucent, candy-coated, reflective, slightly bulging, and sticky,
+as if the creature was dipped in hardened sugar syrup.
 
-Use cinematic lighting, realistic shadows, depth of field, and premium material textures.
-Clean or cinematic background.
+Use cinematic lighting, realistic shadows, depth of field, and photorealistic material textures.
+The creature should feel physically real despite its surreal design.
+Use a clean or cinematic background that does not distract from the subject.
 
 IMPORTANT: Generate exactly one image.
 """.strip()
 
-                image_result = model.generate_content(image_prompt).text
+        st.subheader("📸 Image Generation Prompt")
+        st.text_area(
+            label="Copy & paste this prompt into Opal / Imagen / DALL·E",
+            value=image_generation_prompt,
+            height=420
+        )
 
-                video_prompt = f"""
-Create a cinematic video generation prompt for the hybrid creature:
-
-"{user_input}"
-
-6 seconds duration, slow motion.
-Focus on reflections over thick Tanghulu-like glaze.
-No audio. High-end cinematic mood.
-""".strip()
-
-                video_result = model.generate_content(video_prompt).text
-
-                st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
-                col1, col2 = st.columns(2)
-
-                with col1:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🖼️ Image Generation Prompt")
-                    st.write(image_result)
-                    st.image(
-                        "https://via.placeholder.com/1024x1024?text=Image+Generated+Externally"
-                    )
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-                with col2:
-                    st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🎥 Video Generation Prompt")
-                    st.write(video_result)
-                    st.info("비디오는 Veo / Runway / Opal 등 외부 모델에서 생성하세요.")
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-            except Exception as e:
-                st.error(f"생성 중 오류 발생: {e}")
+        st.success("프롬프트 생성 완료! 🎉")
 
 # --------------------------------------------------
 # 6. 푸터
 # --------------------------------------------------
 st.markdown("---")
 st.markdown(
-    "<p style='text-align:center; color:#888;'>Hybrid Creature Prompt Gallery · Powered by Gemini</p>",
+    "<p style='text-align:center; color:#888;'>Prompt-only version · No API · No Errors</p>",
     unsafe_allow_html=True
 )
