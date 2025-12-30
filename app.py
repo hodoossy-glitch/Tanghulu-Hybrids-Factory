@@ -4,7 +4,7 @@ import google.generativeai as genai
 # 1. 페이지 설정: 오팔 미디어 페이지 스타일 (Surreal Elegance)
 st.set_page_config(page_title="Hybrid Creature Gallery", layout="wide")
 
-# 스타일 설정: 갤러리풍 다크 테마 반영
+# 스타일 설정: 갤러리풍 다크 테마
 st.markdown("""
     <style>
     .main { background-color: #0b0e14; color: #ffffff; }
@@ -13,14 +13,12 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. API 설정 및 모델 로드 (오류 해결 포인트)
+# 2. API 설정 및 모델 로드
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
-    
-    # 404 오류 해결을 위해 모델의 전체 경로명을 사용합니다.
-    # 만약 'models/gemini-1.5-flash'가 안 되면 'gemini-pro'로 변경해 보세요.
-    model = genai.GenerativeModel('models/gemini-1.5-flash')
+    # 404 오류 방지를 위해 표준 모델명을 사용합니다.
+    model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
     st.error(f"⚠️ 설정 오류: {e}")
 
@@ -28,23 +26,20 @@ except Exception as e:
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
 user_input = st.text_input("Describe your hybrid (e.g., 'Fridge Hippo')", placeholder="Violin Koala, Taxi Cat...")
 
+# 4. 실행 버튼 및 생성 로직
 if st.button("🚀 Generate Artwork"):
     if user_input:
         with st.spinner("오팔 엔진이 크리처를 설계 중입니다..."):
             try:
                 # [Opal Step 2 & 3: Image Prompt Logic]
-                img_logic = f"""
-                You are an expert prompt engineer. Expand '{user_input}' into a detailed visual prompt.
-                1. Explicitly describe how the animal's features are replaced by components of the object.
-                2. Apply a thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces.
-                3. High-quality, photorealistic, vibrant, and surreal appearance.
-                IMPORTANT: Generate exactly one image.
-                """
-                # AI를 통해 오팔 수준의 정교한 프롬프트 생성
+                img_logic = (
+                    f"You are an expert prompt engineer. Expand '{user_input}' into a detailed visual prompt. "
+                    "1. Explicitly describe how the animal's features are replaced by components of the object. "
+                    "2. Apply a thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces. "
+                    "3. High-quality, photorealistic, vibrant, and surreal appearance. "
+                    "IMPORTANT: Generate exactly one image."
+                )
                 response_img = model.generate_content(img_logic)
                 img_res = response_img.text
 
-                # [Opal Step 4 & 5: Video Prompt Logic]
-                vid_logic = f"""
-                Create a natural language prompt for a cinematic slow-motion video.
-                1. Visual reference
+                #
