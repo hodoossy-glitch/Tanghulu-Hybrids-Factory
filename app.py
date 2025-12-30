@@ -63,18 +63,4 @@ if st.button("🚀 Generate Artwork"):
 
                 with col2:
                     st.markdown('<div class="gallery-card">', unsafe_allow_html=True)
-                    st.markdown("### 🎥 Cinematic Motion Design")
-                    st.write(vid_res) # 오팔의 영상 프롬프트 출력
-                    st.info("비디오 렌더링 준비 중...")
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-            except Exception as e:
-                # try 블록과 완벽하게 수직 정렬하여 문법 에러 해결
-                st.error(f"생성 중 오류 발생: {e}")
-    else:
-        st.warning("먼저 내용을 입력해주세요.")
-
-# 5. 하단 푸터 및 구독 섹션
-st.markdown("---")
-st.markdown("<h3 style='text-align: center;'>✋ 구독하기</h3>", unsafe_allow_html=True)
-st.write("<p style='text-align: center;'><b>딱-뉴스</b>를 구독하고 에러 없는 오팔 전용 코드를 받아보세요!</p>", unsafe_allow_html=True)
+                    st.markdown("### 🎥 Cinematic
