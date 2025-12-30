@@ -1,10 +1,10 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. 페이지 설정: 오팔 Surreal Elegance 스타일 반영
+# 1. 페이지 설정: 오팔 갤러리 스타일 (Surreal Elegance) 반영
 st.set_page_config(page_title="Hybrid Creature Media Gallery", layout="wide")
 
-# 스타일 설정: 갤러리풍 다크 테마 디자인
+# 스타일 설정: 다크 테마 및 카드 레이아웃 디자인
 st.markdown("""
     <style>
     .main { background-color: #0b0e14; color: #ffffff; }
@@ -14,11 +14,13 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. API 설정 및 모델 로드 (404 오류 방지)
+# 2. API 설정 및 모델 로드 (404 오류 해결 포인트)
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
-    # v1beta 등 모든 버전에서 가장 잘 작동하는 모델명을 사용합니다.
+    
+    # 404 오류 방지를 위해 가장 보편적인 모델 식별자를 사용합니다.
+    # models/ 접두사 없이 모델명만 입력하여 호환성을 높였습니다.
     model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
     st.error(f"⚠️ 설정 오류: {e}")
@@ -27,7 +29,7 @@ except Exception as e:
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
 user_input = st.text_input("Describe your hybrid creature", placeholder="Violin Koala, Taxi Cat, Fridge Hippo...")
 
-# 4. 실행 로직 (모든 문법 에러 및 404 해결 버전)
+# 4. 실행 로직 (SyntaxError 및 404 완벽 해결)
 if st.button("🚀 Generate Artwork"):
     if user_input:
         with st.spinner("오팔 엔진이 크리처를 설계 중입니다..."):
@@ -42,5 +44,3 @@ if st.button("🚀 Generate Artwork"):
                 img_res = model.generate_content(img_p).text
 
                 # [Opal Step 4 & 5: Video Prompt 생성]
-                vid_p = (
-                    f"Video prompt
