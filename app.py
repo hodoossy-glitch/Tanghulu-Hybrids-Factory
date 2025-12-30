@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 # --------------------------------------------------
-# 2. 다크 갤러리 스타일
+# 2. 스타일
 # --------------------------------------------------
 st.markdown("""
 <style>
@@ -34,7 +34,7 @@ h1 { text-align: center; color: #f0f0f0; margin-bottom: 30px; }
 """, unsafe_allow_html=True)
 
 # --------------------------------------------------
-# 3. API 설정 (404 / KeyError 방지)
+# 3. API 설정
 # --------------------------------------------------
 API_KEY = st.secrets.get("GOOGLE_API_KEY")
 if not API_KEY:
@@ -44,14 +44,14 @@ if not API_KEY:
 genai.configure(api_key=API_KEY)
 
 try:
-    # ✔ v1beta에서 확실히 동작하는 모델
-    model = genai.GenerativeModel("gemini-pro")
+    # 🔥 핵심 수정 포인트
+    model = genai.GenerativeModel("models/gemini-pro")
 except Exception as e:
     st.error(f"모델 로드 실패: {e}")
     st.stop()
 
 # --------------------------------------------------
-# 4. 헤더 & 입력
+# 4. 입력 UI
 # --------------------------------------------------
 st.markdown("<h1>✨ Hybrid Creature Media Gallery</h1>", unsafe_allow_html=True)
 
@@ -61,7 +61,7 @@ user_input = st.text_input(
 )
 
 # --------------------------------------------------
-# 5. 실행 로직
+# 5. 실행
 # --------------------------------------------------
 if st.button("🚀 Generate Artwork"):
     if not user_input:
@@ -69,9 +69,6 @@ if st.button("🚀 Generate Artwork"):
     else:
         with st.spinner("Gemini가 프롬프트를 생성 중입니다..."):
             try:
-                # ------------------------------
-                # 이미지 프롬프트 생성 (텍스트)
-                # ------------------------------
                 image_prompt = f"""
 You are an expert image generation prompt engineer.
 
@@ -85,33 +82,26 @@ Apply a thick, ultra-glossy, squishy Tanghulu-like glaze to all surfaces.
 The glaze should appear translucent, candy-coated, reflective, and slightly bulging.
 
 Use cinematic lighting, realistic shadows, depth of field, and premium material textures.
-Use a clean or cinematic background.
+Clean or cinematic background.
 
 IMPORTANT: Generate exactly one image.
 """.strip()
 
                 image_result = model.generate_content(image_prompt).text
 
-                # ------------------------------
-                # 비디오 프롬프트 생성 (텍스트)
-                # ------------------------------
                 video_prompt = f"""
 Create a cinematic video generation prompt for the hybrid creature:
 
 "{user_input}"
 
 6 seconds duration, slow motion.
-Emphasize reflections and highlights on thick Tanghulu-like glaze.
+Focus on reflections over thick Tanghulu-like glaze.
 No audio. High-end cinematic mood.
 """.strip()
 
                 video_result = model.generate_content(video_prompt).text
 
-                # --------------------------------------------------
-                # 6. 갤러리 출력
-                # --------------------------------------------------
                 st.markdown(f"<h1>{user_input}</h1>", unsafe_allow_html=True)
-
                 col1, col2 = st.columns(2)
 
                 with col1:
@@ -134,7 +124,7 @@ No audio. High-end cinematic mood.
                 st.error(f"생성 중 오류 발생: {e}")
 
 # --------------------------------------------------
-# 7. 푸터
+# 6. 푸터
 # --------------------------------------------------
 st.markdown("---")
 st.markdown(
